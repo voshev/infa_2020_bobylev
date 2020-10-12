@@ -18,14 +18,6 @@ CYAN = (0, 255, 255)
 BLACK = (0, 0, 0)
 COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
 
-THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-my_file = os.path.join(THIS_FOLDER, 'results.txt')
-
-if os.path.isfile('results.txt'):
-    print('file exists')
-else:
-    print('no file')
-
 
 class Ball:
     def __init__(self):
@@ -35,18 +27,20 @@ class Ball:
         self.v_x = randint(50, 100)
         self.v_y = randint(50, 100)
         self.color = COLORS[randint(0, 5)]
-        self.number_of_circles = 2
 
     def initialization(self):
         circle(screen, self.color, (self.x, self.y), self.r)
 
     def smash_x(self):
+        """what happens if ball smashes on the x-axe"""
         self.v_x = - self.v_x
 
     def smash_y(self):
+        """what happens if ball smashes on the y-axe"""
         self.v_y = - self.v_y
 
     def balling(self):
+        """function which moves ball"""
         self.x += self.v_x
         self.y += self.v_y
         self.initialization()
@@ -60,6 +54,9 @@ class Ball:
 
 
 class Rect:
+    """
+    this class is a X, which randomly moving
+    """
     def __init__(self):
         self.x = randint(100, 700)
         self.y = randint(100, 500)
@@ -78,6 +75,7 @@ class Rect:
         self.v_y = - self.v_y
 
     def balling(self):
+        """function which moves rect"""
         a = 100
         self.x = randint(self.x - a, self.x + a)
         self.y = randint(self.y - a, self.y + a)
@@ -100,8 +98,8 @@ pygame.display.update()
 clock = pygame.time.Clock()
 finished = False
 
-n_1 = 0
-n_2 = 0
+n_1 = 0  # the first score (catching balls)
+n_2 = 0  # the second score (catching rect)
 
 new_ball_1 = Ball()
 new_ball_2 = Ball()
@@ -135,6 +133,7 @@ results = []
 
 def load():
     global results
+    """this function allows us to bring the previous results"""
     with open('results.txt', 'r') as file:
         for i in file.read():
             results.append(i)
@@ -142,6 +141,8 @@ def load():
 
 def text():
     global n_1, n_2, results
+    """this function adds the scores to the file"""
+    load()
     with open('results.txt', 'w') as file:
         for i in results:
             file.write(i)
