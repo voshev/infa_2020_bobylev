@@ -29,8 +29,8 @@ def car(x=350, y=800, stretch_factor=1, i=1):
     :param stretch_factor: factor of stretching
     :param i: direction of car
     """
-    width = 50 'width base of car'
-    height = 10 'base of car height'
+    width = 50 # width base of car
+    height = 10 # base of car height
     if i == 1:
         """It's drawing exhaust"""
         new_ellipse(x - 35 * stretch_factor * i, y + 2 * stretch_factor,
