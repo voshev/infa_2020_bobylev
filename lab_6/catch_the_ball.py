@@ -19,6 +19,27 @@ BLACK = (0, 0, 0)
 COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
 
 
+results = []
+
+
+def load():
+    global results
+    """this function allows us to bring the previous results"""
+    with open('results.txt', 'r') as file:
+        for i in file.read():
+            results.append(i)
+
+
+def text():
+    global n_1, n_2, results
+    """this function adds the scores to the file"""
+    load()
+    with open('results.txt', 'w') as file:
+        for i in results:
+            file.write(i)
+        file.write(str(n_1)+','+str(n_2)+'\n')
+
+
 class Ball:
     def __init__(self):
         self.x = randint(100, 700)
@@ -53,7 +74,7 @@ class Ball:
         return self.x, self.y, self.r
 
 
-class Rect:
+class NewRect:
     """
     this class is a X, which randomly moving
     """
@@ -64,31 +85,34 @@ class Rect:
         self.v_x = randint(50, 100)
         self.v_y = randint(50, 100)
         self.color = COLORS[randint(0, 5)]
+        self.parameter_of_rand = 100
 
     def initialization(self):
         rect(screen, self.color, (self.x, self.y, self.r, self.r), self.r)
 
-    def smash_x(self):
-        self.v_x = - self.v_x
-
-    def smash_y(self):
-        self.v_y = - self.v_y
-
     def balling(self):
         """function which moves rect"""
-        a = 100
-        self.x = randint(self.x - a, self.x + a)
-        self.y = randint(self.y - a, self.y + a)
-        self.initialization()
 
         if self.x >= screen_width - self.r:
-            self.x = randint(self.x - a, self.x)
-        if self.x <= self.r:
-            self.x = randint(self.x, self.x + a)
-        if self.y <= self.r:
-            self.y = randint(self.y, self.y + 15)
-        if self.y >= screen_height - self.r:
-            self.y = randint(self.y - a, self.y)
+            self.x = randint(self.x - self.parameter_of_rand, self.x)
+            self.y = randint(self.y - self.parameter_of_rand, self.y + self.parameter_of_rand)
+            self.initialization()
+        elif self.x <= self.r:
+            self.x = randint(self.x, self.x + self.parameter_of_rand)
+            self.y = randint(self.y - self.parameter_of_rand, self.y + self.parameter_of_rand)
+            self.initialization()
+        elif self.y <= self.r:
+            self.y = randint(self.y, self.y + self.parameter_of_rand)
+            self.y = randint(self.y - self.parameter_of_rand, self.y + self.parameter_of_rand)
+            self.initialization()
+        elif self.y >= screen_height - self.r:
+            self.y = randint(self.y - self.parameter_of_rand, self.y)
+            self.y = randint(self.y - self.parameter_of_rand, self.y + self.parameter_of_rand)
+            self.initialization()
+        else:
+            self.x = randint(self.x - self.parameter_of_rand, self.x + self.parameter_of_rand)
+            self.y = randint(self.y - self.parameter_of_rand, self.y + self.parameter_of_rand)
+            self.initialization()
 
     def click(self):
         return self.x, self.y, self.r
@@ -104,7 +128,7 @@ n_2 = 0  # the second score (catching rect)
 new_ball_1 = Ball()
 new_ball_2 = Ball()
 
-new_rect_1 = Rect()
+new_rect_1 = NewRect()
 
 while not finished:
     clock.tick(FPS)
@@ -127,27 +151,6 @@ while not finished:
     new_rect_1.balling()
     pygame.display.update()
     screen.fill(BLACK)
-
-results = []
-
-
-def load():
-    global results
-    """this function allows us to bring the previous results"""
-    with open('results.txt', 'r') as file:
-        for i in file.read():
-            results.append(i)
-
-
-def text():
-    global n_1, n_2, results
-    """this function adds the scores to the file"""
-    load()
-    with open('results.txt', 'w') as file:
-        for i in results:
-            file.write(i)
-        file.write(str(n_1)+','+str(n_2)+'\n')
-
 
 text()
 
