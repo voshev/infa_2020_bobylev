@@ -95,19 +95,39 @@ class Gun():
 
 class Target():
     def __init__(self):
+        self.color = 'red'
+        self.r = rnd(2, 50)
+        self.y = rnd(300, 550)
+        self.x = rnd(600, 780)
         self.points = 0
         self.id = canv.create_oval(0, 0, 0, 0)
         self.id_points = canv.create_text(30, 30, text=self.points, font='28')
         self.new_target()
         self.live = 1
+        self.v_x = rnd(10, 50)
+        self.v_y = rnd(10, 50)
 
     def new_target(self):
-        x = self.x = rnd(600, 780)
-        y = self.y = rnd(300, 550)
-        r = self.r = rnd(2, 50)
-        color = self.color = 'red'
-        canv.coords(self.id, x - r, y - r, x + r, y + r)
-        canv.itemconfig(self.id, fill=color)
+        canv.coords(self.id, self.x - self.r, self.y - self.r, self.x + self.r, self.y + self.r)
+        canv.itemconfig(self.id, fill=self.color)
+
+    def smash_x(self):
+        """what happens if ball smashes on the x-axe"""
+        self.v_x = - self.v_x
+
+    def smash_y(self):
+        """what happens if ball smashes on the y-axe"""
+        self.v_y = - self.v_y
+
+    def balling(self):
+        """function which moves ball"""
+        self.x += self.v_x
+        self.y += self.v_y
+        self.new_target()
+        if self.x < self.r or self.x > 800 - self.r:
+            self.smash_x()
+        if self.y < self.r or self.y > 400 - self.r:
+            self.smash_y()
 
     def hit(self, points=1):
         canv.coords(self.id, -10, -10, -10, -10)
@@ -136,6 +156,8 @@ def new_game(event=''):
     t1.live = 1
     t2.live = 1
     while (t1.live or t2.live) or balls:
+        t1.balling()
+        t2.balling()
         for b in balls:
             b.move()
             if (b.hittest(t1) or b.hittest(t2)) and (t1.live or t2.live):
@@ -147,7 +169,7 @@ def new_game(event=''):
                 canv.bind('<ButtonRelease-1>', '')
                 canv.itemconfig(screen1, text='Вы попали в цель за ' + str(bullet) + ' выстрелов')
         canv.update()
-        time.sleep(0.03)
+        time.sleep(z)
         g1.targetting()
         g1.power_up()
     canv.itemconfig(screen1, text='')
